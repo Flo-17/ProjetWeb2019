@@ -1,0 +1,1 @@
+<i>JERSEY WORLD</i> Ouvert tous les jours de <span class="textF">10h</span> à <span class="textF">16h</span>.

@@ -1,0 +1,65 @@
+.nav-item 
+{
+    margin-left: 90px;
+    margin-right: 10px;
+}
+
+.navbar-brand
+{
+    font-family : "Comic sans MS";
+    font-size: 2em;
+    text-decoration: overline;
+}
+
+.logo
+{
+    margin-top : 25px;
+    width : 300px;
+    height : 185px;
+}
+
+#navbarSupportedContent
+{
+    margin-right : 75px;
+}
+
+
+.accueil
+{
+    text-align: center;
+
+}
+
+.boutique
+{
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+#footer
+{
+    position: fixed;
+    right: 0;
+    bottom: 0.2rem;
+    left: 0;
+    padding: 1rem;
+    background-color: #efefef;
+    text-align: center;
+    border: groove;
+}
+
+.textF
+{
+    text-decoration : underline;
+    color : green;
+}
+
+.titre_boutiqueItalie
+{
+    text-align: center;
+}
+
+#boutiqueItalieCenter
+{
+    text-align: center;
+}
