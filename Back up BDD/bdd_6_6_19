@@ -1,0 +1,805 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 10.1
+-- Dumped by pg_dump version 11.1
+
+-- Started on 2019-06-06 14:27:18
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- TOC entry 3 (class 2615 OID 2200)
+-- Name: public; Type: SCHEMA; Schema: -; Owner: postgres
+--
+
+CREATE SCHEMA public;
+
+
+ALTER SCHEMA public OWNER TO postgres;
+
+--
+-- TOC entry 2894 (class 0 OID 0)
+-- Dependencies: 3
+-- Name: SCHEMA public; Type: COMMENT; Schema: -; Owner: postgres
+--
+
+COMMENT ON SCHEMA public IS 'standard public schema';
+
+
+--
+-- TOC entry 213 (class 1255 OID 33374)
+-- Name: ajouter_client(text, text, text, text, text, text, text, text, text); Type: FUNCTION; Schema: public; Owner: postgres
+--
+
+CREATE FUNCTION public.ajouter_client(text, text, text, text, text, text, text, text, text) RETURNS integer
+    LANGUAGE plpgsql
+    AS $_$  DECLARE f_nom ALIAS FOR $1;
+  DECLARE f_prenom ALIAS FOR $2;
+  DECLARE f_cp ALIAS FOR $3;
+  DECLARE f_localite ALIAS FOR $4;
+  DECLARE f_rue ALIAS FOR $5;
+  DECLARE f_num ALIAS FOR $6;
+  DECLARE f_tel ALIAS FOR $7;
+  DECLARE f_email ALIAS FOR $8;
+  DECLARE f_password ALIAS FOR $9;
+  DECLARE id integer;
+  DECLARE retour integer;
+  
+BEGIN
+  SELECT idclient into id FROM api_client WHERE email = f_email and password = f_password;
+  IF NOT FOUND
+  THEN
+    retour=-1;
+	insert into api_client(nom,prenom,cp,localite,rue,num,tel,email,password) values 
+	(f_nom,f_prenom,f_cp,f_localite,f_rue,f_num,f_tel,f_email,f_password);
+	SELECT idclient into id FROM api_client WHERE email = f_email and password = f_password;
+	IF NOT FOUND
+	THEN
+	  retour=0;
+	ELSE
+	  retour=1;
+	END IF;
+  ELSE
+    retour=2;
+  END IF;
+    
+  
+  return retour; 
+  END; 
+$_$;
+
+
+ALTER FUNCTION public.ajouter_client(text, text, text, text, text, text, text, text, text) OWNER TO postgres;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- TOC entry 212 (class 1259 OID 33358)
+-- Name: admin; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.admin (
+    id_admin integer NOT NULL,
+    login text,
+    password text,
+    statut integer
+);
+
+
+ALTER TABLE public.admin OWNER TO postgres;
+
+--
+-- TOC entry 211 (class 1259 OID 33356)
+-- Name: admin_id_admin_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.admin_id_admin_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.admin_id_admin_seq OWNER TO postgres;
+
+--
+-- TOC entry 2895 (class 0 OID 0)
+-- Dependencies: 211
+-- Name: admin_id_admin_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.admin_id_admin_seq OWNED BY public.admin.id_admin;
+
+
+--
+-- TOC entry 197 (class 1259 OID 25275)
+-- Name: api_client; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.api_client (
+    idclient integer NOT NULL,
+    nom text NOT NULL,
+    prenom text NOT NULL,
+    cp text NOT NULL,
+    localite text NOT NULL,
+    rue text NOT NULL,
+    num text NOT NULL,
+    tel text NOT NULL,
+    email text,
+    password text
+);
+
+
+ALTER TABLE public.api_client OWNER TO postgres;
+
+--
+-- TOC entry 196 (class 1259 OID 25273)
+-- Name: api_client_idclient_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.api_client_idclient_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.api_client_idclient_seq OWNER TO postgres;
+
+--
+-- TOC entry 2896 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: api_client_idclient_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.api_client_idclient_seq OWNED BY public.api_client.idclient;
+
+
+--
+-- TOC entry 204 (class 1259 OID 25307)
+-- Name: info_commande; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.info_commande (
+    idligne integer NOT NULL,
+    idcomfact integer NOT NULL,
+    idproduit integer NOT NULL,
+    quantite numeric NOT NULL,
+    prixachat numeric NOT NULL
+);
+
+
+ALTER TABLE public.info_commande OWNER TO postgres;
+
+--
+-- TOC entry 202 (class 1259 OID 25303)
+-- Name: info_commande_idcomfact_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.info_commande_idcomfact_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.info_commande_idcomfact_seq OWNER TO postgres;
+
+--
+-- TOC entry 2897 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: info_commande_idcomfact_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.info_commande_idcomfact_seq OWNED BY public.info_commande.idcomfact;
+
+
+--
+-- TOC entry 201 (class 1259 OID 25301)
+-- Name: info_commande_idligne_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.info_commande_idligne_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.info_commande_idligne_seq OWNER TO postgres;
+
+--
+-- TOC entry 2898 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: info_commande_idligne_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.info_commande_idligne_seq OWNED BY public.info_commande.idligne;
+
+
+--
+-- TOC entry 203 (class 1259 OID 25305)
+-- Name: info_commande_idproduit_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.info_commande_idproduit_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.info_commande_idproduit_seq OWNER TO postgres;
+
+--
+-- TOC entry 2899 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: info_commande_idproduit_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.info_commande_idproduit_seq OWNED BY public.info_commande.idproduit;
+
+
+--
+-- TOC entry 200 (class 1259 OID 25288)
+-- Name: info_facture; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.info_facture (
+    numcommande integer NOT NULL,
+    numfact numeric NOT NULL,
+    datecom date NOT NULL,
+    idclient integer NOT NULL,
+    etat text NOT NULL,
+    montant numeric NOT NULL
+);
+
+
+ALTER TABLE public.info_facture OWNER TO postgres;
+
+--
+-- TOC entry 199 (class 1259 OID 25286)
+-- Name: info_facture_idclient_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.info_facture_idclient_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.info_facture_idclient_seq OWNER TO postgres;
+
+--
+-- TOC entry 2900 (class 0 OID 0)
+-- Dependencies: 199
+-- Name: info_facture_idclient_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.info_facture_idclient_seq OWNED BY public.info_facture.idclient;
+
+
+--
+-- TOC entry 198 (class 1259 OID 25284)
+-- Name: info_facture_numcommande_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.info_facture_numcommande_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.info_facture_numcommande_seq OWNER TO postgres;
+
+--
+-- TOC entry 2901 (class 0 OID 0)
+-- Dependencies: 198
+-- Name: info_facture_numcommande_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.info_facture_numcommande_seq OWNED BY public.info_facture.numcommande;
+
+
+--
+-- TOC entry 206 (class 1259 OID 25322)
+-- Name: info_produit; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.info_produit (
+    idproduit integer NOT NULL,
+    taille numeric NOT NULL,
+    equipe text NOT NULL,
+    phtva numeric NOT NULL,
+    stock numeric NOT NULL,
+    idtype integer NOT NULL
+);
+
+
+ALTER TABLE public.info_produit OWNER TO postgres;
+
+--
+-- TOC entry 205 (class 1259 OID 25320)
+-- Name: info_produit_idproduit_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.info_produit_idproduit_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.info_produit_idproduit_seq OWNER TO postgres;
+
+--
+-- TOC entry 2902 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: info_produit_idproduit_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.info_produit_idproduit_seq OWNED BY public.info_produit.idproduit;
+
+
+--
+-- TOC entry 208 (class 1259 OID 25333)
+-- Name: maillot; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.maillot (
+    numprod integer NOT NULL,
+    couleur text NOT NULL,
+    taille numeric NOT NULL,
+    equipe text NOT NULL,
+    image text NOT NULL,
+    id_type integer NOT NULL
+);
+
+
+ALTER TABLE public.maillot OWNER TO postgres;
+
+--
+-- TOC entry 207 (class 1259 OID 25331)
+-- Name: maillot_numprod_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.maillot_numprod_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.maillot_numprod_seq OWNER TO postgres;
+
+--
+-- TOC entry 2903 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: maillot_numprod_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.maillot_numprod_seq OWNED BY public.maillot.numprod;
+
+
+--
+-- TOC entry 209 (class 1259 OID 33346)
+-- Name: type; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.type (
+    id_type integer,
+    desc_type text
+);
+
+
+ALTER TABLE public.type OWNER TO postgres;
+
+--
+-- TOC entry 210 (class 1259 OID 33352)
+-- Name: vue_maillot; Type: VIEW; Schema: public; Owner: postgres
+--
+
+CREATE VIEW public.vue_maillot AS
+ SELECT maillot.image,
+    maillot.numprod,
+    maillot.couleur,
+    maillot.taille,
+    maillot.equipe,
+    info_produit.idproduit,
+    info_produit.phtva,
+    info_produit.stock,
+    type.id_type,
+    type.desc_type
+   FROM public.maillot,
+    public.info_produit,
+    public.type
+  WHERE ((maillot.numprod = info_produit.idproduit) AND (type.id_type = maillot.id_type));
+
+
+ALTER TABLE public.vue_maillot OWNER TO postgres;
+
+--
+-- TOC entry 2730 (class 2604 OID 33361)
+-- Name: admin id_admin; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.admin ALTER COLUMN id_admin SET DEFAULT nextval('public.admin_id_admin_seq'::regclass);
+
+
+--
+-- TOC entry 2722 (class 2604 OID 25278)
+-- Name: api_client idclient; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.api_client ALTER COLUMN idclient SET DEFAULT nextval('public.api_client_idclient_seq'::regclass);
+
+
+--
+-- TOC entry 2725 (class 2604 OID 25310)
+-- Name: info_commande idligne; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_commande ALTER COLUMN idligne SET DEFAULT nextval('public.info_commande_idligne_seq'::regclass);
+
+
+--
+-- TOC entry 2726 (class 2604 OID 25311)
+-- Name: info_commande idcomfact; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_commande ALTER COLUMN idcomfact SET DEFAULT nextval('public.info_commande_idcomfact_seq'::regclass);
+
+
+--
+-- TOC entry 2727 (class 2604 OID 25312)
+-- Name: info_commande idproduit; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_commande ALTER COLUMN idproduit SET DEFAULT nextval('public.info_commande_idproduit_seq'::regclass);
+
+
+--
+-- TOC entry 2723 (class 2604 OID 25291)
+-- Name: info_facture numcommande; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_facture ALTER COLUMN numcommande SET DEFAULT nextval('public.info_facture_numcommande_seq'::regclass);
+
+
+--
+-- TOC entry 2724 (class 2604 OID 25292)
+-- Name: info_facture idclient; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_facture ALTER COLUMN idclient SET DEFAULT nextval('public.info_facture_idclient_seq'::regclass);
+
+
+--
+-- TOC entry 2728 (class 2604 OID 25325)
+-- Name: info_produit idproduit; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_produit ALTER COLUMN idproduit SET DEFAULT nextval('public.info_produit_idproduit_seq'::regclass);
+
+
+--
+-- TOC entry 2729 (class 2604 OID 25336)
+-- Name: maillot numprod; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.maillot ALTER COLUMN numprod SET DEFAULT nextval('public.maillot_numprod_seq'::regclass);
+
+
+--
+-- TOC entry 2888 (class 0 OID 33358)
+-- Dependencies: 212
+-- Data for Name: admin; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.admin (id_admin, login, password, statut) FROM stdin;
+2	admin	flo	1
+\.
+
+
+--
+-- TOC entry 2874 (class 0 OID 25275)
+-- Dependencies: 197
+-- Data for Name: api_client; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.api_client (idclient, nom, prenom, cp, localite, rue, num, tel, email, password) FROM stdin;
+1	Cammarata	Florian	7370\n	Dour	Moranfayt	144	0476028449	flo@hotmail.com	floo
+\.
+
+
+--
+-- TOC entry 2881 (class 0 OID 25307)
+-- Dependencies: 204
+-- Data for Name: info_commande; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.info_commande (idligne, idcomfact, idproduit, quantite, prixachat) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2877 (class 0 OID 25288)
+-- Dependencies: 200
+-- Data for Name: info_facture; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.info_facture (numcommande, numfact, datecom, idclient, etat, montant) FROM stdin;
+\.
+
+
+--
+-- TOC entry 2883 (class 0 OID 25322)
+-- Dependencies: 206
+-- Data for Name: info_produit; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.info_produit (idproduit, taille, equipe, phtva, stock, idtype) FROM stdin;
+2	45	Inter Milan	50	25	2
+201	42	Belgique	75	50	1
+1	40	Juventus	55	30	1
+\.
+
+
+--
+-- TOC entry 2885 (class 0 OID 25333)
+-- Dependencies: 208
+-- Data for Name: maillot; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.maillot (numprod, couleur, taille, equipe, image, id_type) FROM stdin;
+1	Blanc et noir	40	Juventus	maillotJuventus.png	1
+2	Bleu et noir	45	Inter Milan	maillotInter.png	2
+201	Noir	42	Belgique	maillotBelgique	1
+\.
+
+
+--
+-- TOC entry 2886 (class 0 OID 33346)
+-- Dependencies: 209
+-- Data for Name: type; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.type (id_type, desc_type) FROM stdin;
+1	Tissu
+2	Coton synthétique
+\.
+
+
+--
+-- TOC entry 2904 (class 0 OID 0)
+-- Dependencies: 211
+-- Name: admin_id_admin_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.admin_id_admin_seq', 2, true);
+
+
+--
+-- TOC entry 2905 (class 0 OID 0)
+-- Dependencies: 196
+-- Name: api_client_idclient_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.api_client_idclient_seq', 20, true);
+
+
+--
+-- TOC entry 2906 (class 0 OID 0)
+-- Dependencies: 202
+-- Name: info_commande_idcomfact_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.info_commande_idcomfact_seq', 1, false);
+
+
+--
+-- TOC entry 2907 (class 0 OID 0)
+-- Dependencies: 201
+-- Name: info_commande_idligne_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.info_commande_idligne_seq', 1, false);
+
+
+--
+-- TOC entry 2908 (class 0 OID 0)
+-- Dependencies: 203
+-- Name: info_commande_idproduit_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.info_commande_idproduit_seq', 1, false);
+
+
+--
+-- TOC entry 2909 (class 0 OID 0)
+-- Dependencies: 199
+-- Name: info_facture_idclient_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.info_facture_idclient_seq', 1, false);
+
+
+--
+-- TOC entry 2910 (class 0 OID 0)
+-- Dependencies: 198
+-- Name: info_facture_numcommande_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.info_facture_numcommande_seq', 1, false);
+
+
+--
+-- TOC entry 2911 (class 0 OID 0)
+-- Dependencies: 205
+-- Name: info_produit_idproduit_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.info_produit_idproduit_seq', 1, false);
+
+
+--
+-- TOC entry 2912 (class 0 OID 0)
+-- Dependencies: 207
+-- Name: maillot_numprod_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.maillot_numprod_seq', 1, false);
+
+
+--
+-- TOC entry 2747 (class 2606 OID 33366)
+-- Name: admin admin_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.admin
+    ADD CONSTRAINT admin_pkey PRIMARY KEY (id_admin);
+
+
+--
+-- TOC entry 2732 (class 2606 OID 25283)
+-- Name: api_client api_client_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.api_client
+    ADD CONSTRAINT api_client_pkey PRIMARY KEY (idclient);
+
+
+--
+-- TOC entry 2741 (class 2606 OID 25317)
+-- Name: info_commande info_commande_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_commande
+    ADD CONSTRAINT info_commande_pkey PRIMARY KEY (idligne);
+
+
+--
+-- TOC entry 2735 (class 2606 OID 25299)
+-- Name: info_facture info_facture_numfact_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_facture
+    ADD CONSTRAINT info_facture_numfact_key UNIQUE (numfact);
+
+
+--
+-- TOC entry 2737 (class 2606 OID 25297)
+-- Name: info_facture info_facture_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_facture
+    ADD CONSTRAINT info_facture_pkey PRIMARY KEY (numcommande);
+
+
+--
+-- TOC entry 2743 (class 2606 OID 25330)
+-- Name: info_produit info_produit_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_produit
+    ADD CONSTRAINT info_produit_pkey PRIMARY KEY (idproduit);
+
+
+--
+-- TOC entry 2745 (class 2606 OID 25341)
+-- Name: maillot maillot_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.maillot
+    ADD CONSTRAINT maillot_pkey PRIMARY KEY (numprod);
+
+
+--
+-- TOC entry 2738 (class 1259 OID 25318)
+-- Name: info_commande_idcomfact_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX info_commande_idcomfact_idx ON public.info_commande USING btree (idcomfact);
+
+
+--
+-- TOC entry 2739 (class 1259 OID 25319)
+-- Name: info_commande_idproduit_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX info_commande_idproduit_idx ON public.info_commande USING btree (idproduit);
+
+
+--
+-- TOC entry 2733 (class 1259 OID 25300)
+-- Name: info_facture_idclient_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX info_facture_idclient_idx ON public.info_facture USING btree (idclient);
+
+
+--
+-- TOC entry 2749 (class 2606 OID 25347)
+-- Name: info_commande fk_info_commande__idcomfact; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_commande
+    ADD CONSTRAINT fk_info_commande__idcomfact FOREIGN KEY (idcomfact) REFERENCES public.info_facture(numcommande);
+
+
+--
+-- TOC entry 2750 (class 2606 OID 25352)
+-- Name: info_commande fk_info_commande__idproduit; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_commande
+    ADD CONSTRAINT fk_info_commande__idproduit FOREIGN KEY (idproduit) REFERENCES public.info_produit(idproduit);
+
+
+--
+-- TOC entry 2748 (class 2606 OID 25342)
+-- Name: info_facture fk_info_facture__idclient; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.info_facture
+    ADD CONSTRAINT fk_info_facture__idclient FOREIGN KEY (idclient) REFERENCES public.api_client(idclient);
+
+
+-- Completed on 2019-06-06 14:27:19
+
+--
+-- PostgreSQL database dump complete
+--
+
