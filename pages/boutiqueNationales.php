@@ -1,4 +1,4 @@
- <h1 class="titre_boutiqueItalie">Boutique des clubs italiens</h2>
+ <h1 class="titre_boutiqueItalie">Boutique des équipes nationales</h2>
  <br>
  <br>
 
@@ -9,11 +9,12 @@ $types = $typ->getType();
 $nbr_type = count($types);
 
 //récupération des produits
-$vue = new Vue_maillot_italieDB($cnx);
+$vue = new Vue_maillot_nationalesDB($cnx);
 
 $liste = array();
 $liste = null;
-$liste = $vue->getAllMaillotI();
+
+$liste = $vue->getAllMaillotN();
 ?>
 
 <?php
@@ -47,7 +48,7 @@ if ($liste != null) {
                             ACHETER
                         </a>
                     </p>
-                    -------------------------------------
+                    -------------------------------------                 
                 </div>
             </div>
             <?php

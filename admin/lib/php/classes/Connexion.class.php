@@ -2,13 +2,19 @@
 
 class Connexion {
     private static $_instance = null;
-    
-    public static function getInstance($dsn,$user,$pass){
-        if(!self::$_instance){
-            try{
-                self::$_instance = new PDO($dsn,$user,$pass);
-            }catch(PDOException $e){
-                print $e->getMessage();
+
+    public static function getInstance($dsn, $user, $pass) {
+ 
+        if (!self::$_instance) {
+            try {
+                self::$_instance = new PDO($dsn, $user, $pass);
+              
+                self::$_instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+             
+                
+            } catch (PDOException $e) {
+                print "Erreur de connexion : ".$e->getMessage()." ".$e->getLine();
+          
             }
         }
         return self::$_instance;
