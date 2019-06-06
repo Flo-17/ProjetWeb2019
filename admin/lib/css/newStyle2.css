@@ -63,37 +63,3 @@
 {
     text-align: center;
 }
-
-#bottom
-{
-    margin-bottom : 100px;
-}
-
-.txtRouge
-{
-    color : red;
-}
-
-.txtGreen
-{
-    color : green;
-}
-
-.txtStyle
-{
-    font-style: italic;
-    font-weight: bold;
-    text-decoration: underline;
-}
-
-.accueilAdmin
-{
-    text-align: center;
-    padding-top : 100px;
-}
-
-#loc
-{
-    padding-right: 100px;
-    text-decoration : underline;
-}
