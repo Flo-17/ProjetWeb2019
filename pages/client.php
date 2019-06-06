@@ -7,9 +7,14 @@ if (isset($_GET['commander'])) {
     extract($_GET, EXTR_OVERWRITE);
 
     if (empty($nom) || empty($prenom) || empty($cp) || empty($localite) || empty($rue) || empty($num) || empty($tel) || empty($email1) || empty($email2) || empty($password)) {
-        $erreur = "<span class='txtRouge txtGras'>Veuillez remplir tous les champs</span>";
+        $erreur = "<span class='txtRouge txtGras'>Veuillez remplir tous les champs.</span>";
         print $erreur;
-    } else {
+    } else if(($email1) != ($email2)) {
+        $erreur = "<span class='txtRouge txtGras'>Les emails ne correspondent pas. Veuillez vérifier.</span>";
+        print $erreur;
+    }
+    else
+    {
         $cl = new ClientDB($cnx);
         $retour = $cl->addClient($_GET);
         if ($retour == 1) {

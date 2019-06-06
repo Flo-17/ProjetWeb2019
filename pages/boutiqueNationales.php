@@ -44,9 +44,19 @@ if ($liste != null) {
                     ?>
                     <p>
                         <br/>
+                        <?php
+                        if ($liste[$i]['stock'] > 0) {
+                        ?>
                         <a href="index.php?page=client&idproduit=<?php print $liste[$i]['idproduit']; ?> " > 
                             ACHETER
                         </a>
+                        <?php
+                        }
+                        else
+                        {
+                            print 'Objet en rupture de stock...';
+                        }
+                        ?>
                     </p>
                     -------------------------------------                 
                 </div>
